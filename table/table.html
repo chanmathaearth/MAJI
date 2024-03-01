@@ -42,7 +42,7 @@
                     <p class="font-[20%] font-medium text-center"> เลือกโต๊ะ</p>
                     <div
                         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 p-4 ">
-                        <div
+                        <div onclick="hello(this)"
                             class="rounded-full bg-white w-32 h-24 flex items-center justify-center text-black border-8 border-green-500 shadow-lg hover:scale-110 transition-transform duration-100 hover:animate-pulse">
                             <p class="text-center" name="customer"><span class="font-bold text-lg"
                                     name="table">A1</span><br>ว่าง</p>
@@ -132,22 +132,8 @@
                     <form class="rounded-full">
                         <label for="default-search"
                             class="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                </svg>
-                            </div>
-                            <input type="search" id="default-search"
-                                class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 "
-                                placeholder="Search" required />
-                            <button type="submit"
-                                class="text-white absolute end-2.5 bottom-2.5 bg-red-700 hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Search</button>
-                        </div>
                     </form>
-                    <div class="overflow-y-auto max-h-80">
+                    <div class="overflow-y-auto max-h-90">
                         <p name="time" class="font-medium mt-5 ml-1 mb-5">11.30</p>
                         <div class="rounded-full box-border bg-gray-300 hover:bg-gray-500 hover:text-black p-1 m-2">
                             <span class="flex rounded-full bg-gray-200 w-10 h-10 p-2 whitespace-nowrap ">A1<p
@@ -183,9 +169,134 @@
 
             </div>
         </div>
-
-
     </div>
+    
+
+    <div class="sm:rounded-lg w-[80%] mx-auto mb-20 mt-[-4%] sm:rounded-3xl flex justify-center items-center" >
+        <table class="w-full text-left " >
+        <thead class="text-l bg-gray-200">
+            <tr>
+                <th scope="col" class="p-4">
+                    <div class="flex items-center">
+                        <input id="checkbox-all-search" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 rounded">
+                        <label for="checkbox-all-search" class="sr-only">checkbox</label>
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Product name
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Color
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Category
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Price
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="bg-gray-50 border-b hover:bg-gray-100">
+                <td class="w-4 p-4">
+                    <div class="flex items-center">
+                        <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-100">
+                        <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                    </div>
+                </td>
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    Apple MacBook Pro 17"
+                </th>
+                <td class="px-6 py-4">
+                    Silver
+                </td>
+                <td class="px-6 py-4">
+                    Laptop
+                </td>
+                <td class="px-6 py-4">
+                    $2999
+                </td>
+                <td class="px-6 py-4">
+                    <a href="#" class="font-medium text-red-400 hover:text-red-600">Edit</a>
+                </td>
+            </tr>
+            <tr class="bg-gray-50 border-b hover:bg-gray-100">
+                <td class="w-4 p-4">
+                    <div class="flex items-center">
+                        <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-100">
+                        <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                    </div>
+                </td>
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    Apple MacBook Pro 17"
+                </th>
+                <td class="px-6 py-4">
+                    Silver
+                </td>
+                <td class="px-6 py-4">
+                    Laptop
+                </td>
+                <td class="px-6 py-4">
+                    $2999
+                </td>
+                <td class="px-6 py-4">
+                    <a href="#" class="font-medium text-red-400 hover:text-red-600">Edit</a>
+                </td>
+            </tr>
+            <tr class="bg-gray-50 border-b hover:bg-gray-100">
+                <td class="w-4 p-4">
+                    <div class="flex items-center">
+                        <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-100">
+                        <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                    </div>
+                </td>
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    Apple MacBook Pro 17"
+                </th>
+                <td class="px-6 py-4">
+                    Silver
+                </td>
+                <td class="px-6 py-4">
+                    Laptop
+                </td>
+                <td class="px-6 py-4">
+                    $2999
+                </td>
+                <td class="px-6 py-4">
+                    <a href="#" class="font-medium text-red-400 hover:text-red-600">Edit</a>
+                </td>
+            </tr>
+            <tr class="bg-gray-50 border-b hover:bg-gray-100">
+                <td class="w-4 p-4">
+                    <div class="flex items-center">
+                        <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-100">
+                        <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                    </div>
+                </td>
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    Apple MacBook Pro 17"
+                </th>
+                <td class="px-6 py-4">
+                    Silver
+                </td>
+                <td class="px-6 py-4">
+                    Laptop
+                </td>
+                <td class="px-6 py-4">
+                    $2999
+                </td>
+                <td class="px-6 py-4">
+                    <a href="#" class="font-medium text-red-400 hover:text-red-600">Edit</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
     </div>
     <script>
         fetch('../topbar.html')
@@ -197,6 +308,10 @@
         const currentDate = new Date();
         const formattedDate = currentDate.toISOString().split('T')[0];
         document.getElementById('selectedDate').value = formattedDate;
+
+        function hello(){
+            alert('Hello');
+        }
     </script>
 </body>
 
