@@ -12,10 +12,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-    <script src="fetchmainNav.js"></script>
-    <script src="fetchNavbar.js"></script>
-    <script src="fetchBasket.js"></script>
-    <script src="fetchPopup.js"></script>
 
     <title>menuset</title>
     <style>
@@ -47,16 +43,21 @@
             transform: scale(1.05);
         }
     </style>
-
+    <script src="fetchmainNav.js"></script>
+    <script src="fetchNavbar.js"></script>
+    <script src="fetchBasket.js"></script>
 </head>
 
 <body class="bg-white">
 
     <div id="mainnavbar"></div>
 
-    <div class="grid place-content-center sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4 mt-[3%]">
-        <div class="col-span-3 sm:col-span-4">
-            <div id="navbar"></div>
+    <div class="flex justify-center">
+        <div id="navbar" class="flex mt-10 text-nowrap p-6 z-50 overflow-x-auto ml-[10%] mr-[10%]  "></div>
+    </div>
+
+    <div class="grid w-full h-screen sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-4">
+        <div class="md:col-span-3 sm:col-span-4 items-center justify-center">
             <?php
             $servername = "localhost";
             $username = "S074T";
@@ -71,7 +72,7 @@
                 die("Connection failed: " . mysqli_connect_error());
             }
 
-            $sql = "SELECT * FROM menu WHERE menuTypeID = 1 ;";
+            $sql = "SELECT * FROM menu WHERE menuTypeID = 1;";
             $result = mysqli_query($conn, $sql);
             echo '<form  method="get" class="grid place-content-center mr-[8%] ml-[8%] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-1 mt-[5%]"> ';
 
@@ -96,11 +97,11 @@
             mysqli_close($conn);
             ?>
         </div>
-        <div class="w-60">
-            <div class="ml-3">
-                <div class="container mx-auto p-4">
+        <div class="flex-wrap justify-center mb-2 p-10">
+            <div class="">
+                <div class="container w-full mx-auto ">
                     <label for="orderType" class="block text-sm font-medium text-gray-600">เลือกประเภทการสั่ง</label>
-                    <select id="orderType" name="orderType" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 bg-white">
+                    <select id="orderType" name="orderType" class="mt-1 block w- p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 bg-white">
                         <option value="delivery">สั่งกลับบ้าน</option>
                         <option value="dine-in">ทานที่ร้าน</option>
                     </select>
@@ -124,8 +125,7 @@
                 });
             </script>
 
-            <div id="basket" class="justify-center mt-[3%]"></div>
-
+            <div id="basket" class="justify-center mt-[30%] w-60"></div>
         </div>
     </div>
 

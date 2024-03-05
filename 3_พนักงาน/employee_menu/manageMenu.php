@@ -98,7 +98,7 @@
 
 
                         <div>
-                            <label class="block mb-2 mt-3 text-sm font-medium text-white" for="file_input">ใส่รูปเมนู</label>
+                            <label class="block mb-2 mt-3 text-sm font-medium text-black" for="file_input">ใส่รูปเมนู</label>
                             <input name="fileName" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white" id="file_input" type="file">
                         </div>
                     </div>
