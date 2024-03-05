@@ -28,14 +28,6 @@ if ($conn->connect_error) {
 ?>
 
 <script>
-    const confirmButton = document.getElementById('confirmButton');
-
-    confirmButton.addEventListener('click', function() {
-        // เพิ่มคลาส bg-green-500 และ text-white ให้กับปุ่ม
-        this.classList.remove('bg-red-500');
-        this.classList.add('bg-green-500', 'text-white');
-    });
-
 
     function confirm(orderId, menuId, menuStatus) {
         var xhr = new XMLHttpRequest();
@@ -45,43 +37,52 @@ if ($conn->connect_error) {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 console.log(xhr.responseText);
                 console.log(orderId);
+                alert("อัพเดตเสร็จสิ้น");
             }
         };
         xhr.send('orderId=' + orderId + '&menuId=' + menuId + '&menuStatus=' + menuStatus);
     }
 
-    function checkOrder(orderId) {
-        var elements = document.querySelectorAll(".menuStatus");
-        var allFinished = true;
-
-        elements.forEach(function(element) {
-            if (element.dataset.orderid == orderId && element.innerText.trim() !== 'เสร็จสิ้นเมนู') {
-                allFinished = false;
-                return;
-            }
-        });
-
-        if (allFinished) {
-            console.log("เมนูทั้งหมดเสร็จสิ้นแล้ว");
-            // ทำอย่างไรก็ตามที่ต้องการเมื่อเมนูทั้งหมดเสร็จสิ้นแล้ว
-        } else {
-            console.log("ยังมีเมนูบางรายการที่ยังไม่เสร็จสิ้น");
-            // ทำอย่างไรก็ตามที่ต้องการเมื่อยังมีเมนูบางรายการที่ยังไม่เสร็จสิ้น
+    function checkOrder(orderId, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'getMenuStatus.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var result = xhr.responseText.trim(); // Remove leading/trailing whitespaces
+            console.log(result);
+            callback(result); // Execute the callback function with the result
         }
+    };
+    xhr.send('orderId=' + orderId);
+}
+
+function handleResult(result) {
+    if (result === 'true') {
+        alert("เมนูทั้งหมดเสร็จสิ้นแล้ว");
+        location.reload();
+        // Perform actions when all menus are completed
+    } else {
+        alert("ยังมีเมนูบางรายการที่ยังไม่เสร็จสิ้น");
+        // Perform actions when some menus are not completed
     }
+}
+
+
 </script>
 
 <body style="
       font-family: Prompt, sans-serif;
       font-weight: 300;
       font-style: normal;">
+
     <div id="navbar"></div>
     <div class="mt-10 ml-10">
         <h1 class="text-3xl font-bold p-3">รายการอาหาร</h1>
     </div>
     <div class="relative overflow-x-auto m-10">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                 <tr>
                     <th scope="col" class="px-6 py-3">Order ID</th>
                     <th scope="col" class="px-6 py-3">รับบริการ</th>
@@ -125,8 +126,8 @@ if ($conn->connect_error) {
                             continue;
                         }
 
-                        echo "<tr class='bg-white border-b dark:bg-gray-800 dark:border-gray-700'>";
-                        echo "<td scope='row' class='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white'>" . $orderId . "</td>";
+                        echo "<tr class='bg-white border-b'>";
+                        echo "<td scope='row' class='px-6 py-4 font-medium text-gray-900 whitespace-nowrap'>" . $orderId . "</td>";
                         echo "<td class='px-6 py-4'>" . $service . "</td>";
                         echo "<td class='py-4'>" . date('d-M-Y H:i:s', strtotime($orderDateTime)) . "</td>";
 
@@ -142,7 +143,7 @@ if ($conn->connect_error) {
 
                         echo "<td class='px-6 py-4'>" . $description . "</td>";
                         echo "<td class='text-center' style='width: 150px'>
-                        <button data-modal-target='default-modal-$orderId' data-modal-toggle='default-modal-$orderId' class='block text-white bg-[#ef4444] hover:bg-[#dc2626] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800' type='button'>
+                        <button data-modal-target='default-modal-$orderId' data-modal-toggle='default-modal-$orderId' class='block text-white bg-[#ef4444] hover:bg-[#dc2626] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center' type='button'>
                         ดูรายละเอียด
                         </button>
                             </button>
@@ -152,13 +153,13 @@ if ($conn->connect_error) {
                         echo "<div id='default-modal-$orderId' tabindex='-1' aria-hidden='true' class='hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full'>
                                     <div class='relative p-4 w-full max-w-9xl max-h-full'>
                                         <!-- Modal content -->
-                                        <div class='relative bg-white rounded-lg shadow dark:bg-gray-700'>
+                                        <div class='relative bg-white rounded-lg shadow'>
                                             <!-- Modal header -->
-                                            <div class='flex items-center justify-between p-2 md:p-5 border-b rounded-t dark:border-gray-600'>
-                                                <h3 class='text-xl font-semibold text-gray-900 dark:text-white'>
+                                            <div class='flex items-center justify-between p-2 md:p-5 border-b rounded-t'>
+                                                <h3 class='text-xl font-semibold text-gray-900'>
                                                     รายละเอียดคำสั่งซื้อ
                                                 </h3>
-                                                <button type='button' class='data-modal-target='default-modal-$orderId' data-modal-toggle='default-modal-$orderId' text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white' data-modal-hide='default-modal-$order'>
+                                                <button type='button' class='data-modal-hide='default-modal-$orderId' text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center' data-modal-hide='default-modal-$orderId'>
                                                     <svg class='w-3 h-3' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 14 14'>
                                                         <path stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'/>
                                                     </svg>
@@ -167,8 +168,7 @@ if ($conn->connect_error) {
                                             </div>";
                         echo "<!-- Modal body -->
                         <div class='md:p-5 space-y-4'>
-                        <div class='grid grid-cols-5 gap-10 border p-3'>
-                        <div class='bg-gray-200 px-5 py-3  text-center'>เลือก</div>
+                        <div class='grid grid-cols-4 gap-10 border p-3'>
                         <div class='bg-gray-200 px-5 py-3'>ชื่อ</div>
                         <div class='bg-gray-200 px-5 py-3'>รายละเอียด</div>
                         <div class='bg-gray-200 px-5 py-3  text-center'>สถานะ</div>
@@ -197,7 +197,7 @@ if ($conn->connect_error) {
 
 
 
-                                    echo " <div class='mx-auto'><input id='enabled-checkbox' type='checkbox' value='' class='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'></div>
+                                    echo "
                                     <div>$menuName</div>
                                     <div>$menuDescription</div>";
 
@@ -231,8 +231,8 @@ if ($conn->connect_error) {
 
                         echo "<!-- Modal footer -->
                         <div>
-                          <div class='flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600'>
-                                <button data-modal-hide='default-modal-$orderId' onclick='checkOrder()' type='button' class='text-white bg-[#ef4444] hover:bg-[#dc2626] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>เสร็จสิ้นออเดอร์</button>
+                          <div class='flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b'>
+                                <button data-modal-hide='default-modal-$orderId' onclick='checkOrder($orderId, handleResult)' type='button' class='text-white bg-[#ef4444] hover:bg-[#dc2626] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center'>เสร็จสิ้นออเดอร์</button>
                             </div>
                         </div>
                 ";
