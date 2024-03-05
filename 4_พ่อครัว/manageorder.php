@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -14,6 +13,64 @@
     <title>ManageOrder</title>
 </head>
 
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "maji";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+?>
+
+<script>
+    const confirmButton = document.getElementById('confirmButton');
+
+    confirmButton.addEventListener('click', function() {
+        // เพิ่มคลาส bg-green-500 และ text-white ให้กับปุ่ม
+        this.classList.remove('bg-red-500');
+        this.classList.add('bg-green-500', 'text-white');
+    });
+
+
+    function confirm(orderId, menuId, menuStatus) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'updateStatus.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                console.log(xhr.responseText);
+                console.log(orderId);
+            }
+        };
+        xhr.send('orderId=' + orderId + '&menuId=' + menuId + '&menuStatus=' + menuStatus);
+    }
+
+    function checkOrder(orderId) {
+        var elements = document.querySelectorAll(".menuStatus");
+        var allFinished = true;
+
+        elements.forEach(function(element) {
+            if (element.dataset.orderid == orderId && element.innerText.trim() !== 'เสร็จสิ้นเมนู') {
+                allFinished = false;
+                return;
+            }
+        });
+
+        if (allFinished) {
+            console.log("เมนูทั้งหมดเสร็จสิ้นแล้ว");
+            // ทำอย่างไรก็ตามที่ต้องการเมื่อเมนูทั้งหมดเสร็จสิ้นแล้ว
+        } else {
+            console.log("ยังมีเมนูบางรายการที่ยังไม่เสร็จสิ้น");
+            // ทำอย่างไรก็ตามที่ต้องการเมื่อยังมีเมนูบางรายการที่ยังไม่เสร็จสิ้น
+        }
+    }
+</script>
+
 <body style="
       font-family: Prompt, sans-serif;
       font-weight: 300;
@@ -26,7 +83,6 @@
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                    <th scope="col" class="px-6 py-3">ลำดับ</th>
                     <th scope="col" class="px-6 py-3">Order ID</th>
                     <th scope="col" class="px-6 py-3">รับบริการ</th>
                     <th scope="col" class="px-6 py-3">เวลา</th>
@@ -37,71 +93,157 @@
             </thead>
             <tbody>
                 <?php
-                // get data from json file
-                $json = file_get_contents('./order.json');
-                $data = json_decode($json, true);
+                $ordersSQL = "SELECT orderId, tableId, takeawayId, deliveryId, `description`, orderDateTime, orderStatus, custId FROM orders";
+                $orderResult = $conn->query($ordersSQL);
+                if ($orderResult->num_rows > 0) {
+                    while ($ordersRow = $orderResult->fetch_assoc()) {
+                        $orderId = $ordersRow['orderId'];
+                        $table = $ordersRow['tableId'];
+                        $takeaway = $ordersRow['takeawayId'];
+                        $delivery = $ordersRow['deliveryId'];
+                        $description = $ordersRow['description'];
+                        $orderDateTime = $ordersRow['orderDateTime'];
+                        $orderStatus = $ordersRow['orderStatus'];
+                        $custId = $ordersRow['custId'];
 
-                // get data from api server
-                // $response = file_get_contents('https://jsonplaceholder.typicode.com/users');
-                // $data = json_decode($response);
-                $i = 1;
-                foreach ($data as $value) {
-                    echo "<tr class='bg-white border-b dark:bg-gray-800 dark:border-gray-700'>";
-                    echo "<td scope='row' class='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white'>" . $i . "</td>";
-                    echo "<td class='px-6 py-4'>" . $value['orderID'] . "</td>";
-                    echo "<td class='px-6 py-4'>" . $value['place'] . "</td>";
-                    echo "<td class='px-6 py-4'>" . date('d-M-Y H:i:s', strtotime($value['date'])) . "</td>";
-                    if ($value['status'] == 'pending') {
-                        echo "<td class='text-justify text-yellow-500'>" . "รอการยืนยัน" . "</td>";
-                    } else if ($value['status'] == 'cooking') {
-                        echo "<td class='text-justify text-orange-500'>" . "กำลังทำอาหาร" . "</td>";
-                    }
-                    echo "<td>" . $value['note'] . "</td>";
-                    echo "<td class='text-center' style='width: 150px'>
-                        <button data-modal-target='default-modal' data-modal-toggle='default-modal' class='block text-white bg-[#ef4444] hover:bg-[#dc2626] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800' type='button'>
-                        จัดการออเดอร์
+
+                        $service = "";
+                        if ($table !== null && $delivery === null && $takeaway === null) {
+                            $service = "กินทีั่ร้าน" . $table;
+                        } else if ($table === null && $delivery !== null && $takeaway === null) {
+                            $service = "Delivery";
+                        } else if ($table === null && $delivery === null && $takeaway !== null) {
+                            $service = "สั่งกลับบ้าน";
+                        }
+
+
+                        if ($description === "") {
+                            $description = "-";
+                        }
+
+                        if ($orderStatus === "กำลังสั่งอาหาร") {
+                            continue;
+                        }
+
+                        echo "<tr class='bg-white border-b dark:bg-gray-800 dark:border-gray-700'>";
+                        echo "<td scope='row' class='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white'>" . $orderId . "</td>";
+                        echo "<td class='px-6 py-4'>" . $service . "</td>";
+                        echo "<td class='py-4'>" . date('d-M-Y H:i:s', strtotime($orderDateTime)) . "</td>";
+
+                        if ($orderStatus == 'ได้รับออเดอร์') {
+                            echo "<td class='text-justify text-yellow-500'>" . "ได้รับออเดอร์" . "</td>";
+                        } else if ($orderStatus == 'กำลังปรุงอาหาร') {
+                            echo "<td class='text-justify text-orange-500'>" . "กำลังปรุงอาหาร" . "</td>";
+                        } else if ($orderStatus == 'เสร็จสิ้นออเดอร์') {
+                            echo "<td class='text-justify text-green-500'>" . "เสร็จสิ้นออเดอร์" . "</td>";
+                        } else if ($orderStatus == 'ยกเลิกออเดอร์') {
+                            echo "<td class='text-justify text-red-500'>" . "ยกเลิกออเดอร์" . "</td>";
+                        }
+
+                        echo "<td class='px-6 py-4'>" . $description . "</td>";
+                        echo "<td class='text-center' style='width: 150px'>
+                        <button data-modal-target='default-modal-$orderId' data-modal-toggle='default-modal-$orderId' class='block text-white bg-[#ef4444] hover:bg-[#dc2626] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800' type='button'>
+                        ดูรายละเอียด
                         </button>
                             </button>
                           </td>";
-                    echo "</tr>";
+                        echo "</tr>";
+                        // Modal content
+                        echo "<div id='default-modal-$orderId' tabindex='-1' aria-hidden='true' class='hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full'>
+                                    <div class='relative p-4 w-full max-w-9xl max-h-full'>
+                                        <!-- Modal content -->
+                                        <div class='relative bg-white rounded-lg shadow dark:bg-gray-700'>
+                                            <!-- Modal header -->
+                                            <div class='flex items-center justify-between p-2 md:p-5 border-b rounded-t dark:border-gray-600'>
+                                                <h3 class='text-xl font-semibold text-gray-900 dark:text-white'>
+                                                    รายละเอียดคำสั่งซื้อ
+                                                </h3>
+                                                <button type='button' class='data-modal-target='default-modal-$orderId' data-modal-toggle='default-modal-$orderId' text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white' data-modal-hide='default-modal-$order'>
+                                                    <svg class='w-3 h-3' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 14 14'>
+                                                        <path stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'/>
+                                                    </svg>
+                                                    <span class='sr-only'>Close modal</span>
+                                                </button>
+                                            </div>";
+                        echo "<!-- Modal body -->
+                        <div class='md:p-5 space-y-4'>
+                        <div class='grid grid-cols-5 gap-10 border p-3'>
+                        <div class='bg-gray-200 px-5 py-3  text-center'>เลือก</div>
+                        <div class='bg-gray-200 px-5 py-3'>ชื่อ</div>
+                        <div class='bg-gray-200 px-5 py-3'>รายละเอียด</div>
+                        <div class='bg-gray-200 px-5 py-3  text-center'>สถานะ</div>
+                        <div class='bg-gray-200 px-5 py-3 text-center'>อัพเดต</div>";
+                        $orderDetailSQL = "SELECT menuId, menuStatus FROM orderDetail WHERE orderId=$orderId";
+                        $orderDetailResult = $conn->query($orderDetailSQL);
 
-                    // Modal content
-                    echo "<div id='default-modal' tabindex='-1' aria-hidden='true' class='hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full'>
-                    <div class='relative p-4 w-full max-w-2xl max-h-full'>
-                        <!-- Modal content -->
-                        <div class='relative bg-white rounded-lg shadow dark:bg-gray-700'>
-                            <!-- Modal header -->
-                            <div class='flex items-center justify-between p-2 md:p-5 border-b rounded-t dark:border-gray-600'>
-                                <h3 class='text-xl font-semibold text-gray-900 dark:text-white'>
-                                    รายละเอียดคำสั่งซื้อ
-                                </h3>
-                                <button type='button' class='text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white' data-modal-hide='default-modal'>
-                                    <svg class='w-3 h-3' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 14 14'>
-                                        <path stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'/>
-                                    </svg>
-                                    <span class='sr-only'>Close modal</span>
-                                </button>
-                            </div>
-                            <!-- Modal body -->
-                            <div class='p-4 md:p-5 space-y-4'>
-                                <p class='text-base leading-relaxed text-gray-500 dark:text-gray-400'>
-                                    รายละเอียดคำสั่งซื้อที่นี้...
-                                </p>
-                            </div>
-                            <!-- Modal footer -->
-                            <div class='flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600'>
-                                <button data-modal-hide='default-modal' type='button' class='text-white bg-[#ef4444] hover:bg-[#dc2626] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>ทำอาหาร</button>
+                        if ($orderDetailResult->num_rows > 0) {
+                            while ($orderDetailRow = $orderDetailResult->fetch_assoc()) {
+                                $menuId = $orderDetailRow['menuId'];
+                                $menuStatus = $orderDetailRow['menuStatus'];
+
+                                $menuSQL = "SELECT menuName, menuDescription FROM menu WHERE menuId=$menuId";
+                                $menuResult = $conn->query($menuSQL);
+
+                                if ($menuResult->num_rows > 0) {
+                                    $menuRow = $menuResult->fetch_assoc();
+                                    $menuName = $menuRow['menuName'];
+                                    $menuDescription = $menuRow['menuDescription'];
+
+                                    if ($menuStatus === 'ได้รับเมนู') {
+                                        $menuStatusUpdate = 'เริ่มการทำอาหาร';
+                                    } else if ($menuStatus === 'กำลังทำเมนู') {
+                                        $menuStatusUpdate = 'เสร็จสิ้น';
+                                    }
+
+
+
+                                    echo " <div class='mx-auto'><input id='enabled-checkbox' type='checkbox' value='' class='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'></div>
+                                    <div>$menuName</div>
+                                    <div>$menuDescription</div>";
+
+                                    if ($menuStatus === 'ได้รับเมนู') {
+                                        echo "<div class='text-center text-yellow-500' id='menuStatus'>$menuStatus</div>";
+                                    } else if ($menuStatus === 'กำลังทำเมนู') {
+                                        echo "<div class='text-center text-red-500 id='menuStatus''>$menuStatus</div>";
+                                    } else if ($menuStatus === 'เสร็จสิ้นเมนู') {
+                                        echo "<div class='text-center text-green-500 id='menuStatus''>$menuStatus</div>";
+                                    }
+
+                                    if ($menuStatus === 'เสร็จสิ้นเมนู') {
+                                        echo "<div class='mx-auto'><button class='bg-gray-500 block text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center' type='button'>
+                                        </button>
+                                    </div>";
+                                    } else {
+                                        echo "<div class='mx-auto'><button onclick='confirm($orderId, $menuId, \"$menuStatus\") ' id='confirmButton' class='bg-red-500 hover:bg-red-200 block text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center' type='button'>
+                                        $menuStatusUpdate</button>
+                                    </div>";
+                                    }
+                                } else {
+                                    echo "Menu not found.";
+                                }
+                            }
+
+                            echo "</div>
+                                </div>";
+                        }
+
+
+
+                        echo "<!-- Modal footer -->
+                        <div>
+                          <div class='flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600'>
+                                <button data-modal-hide='default-modal-$orderId' onclick='checkOrder()' type='button' class='text-white bg-[#ef4444] hover:bg-[#dc2626] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>เสร็จสิ้นออเดอร์</button>
                             </div>
                         </div>
-                    </div>
-                </div>
                 ";
-                $i++;
+                    }
                 }
                 ?>
+
             </tbody>
         </table>
     </div>
+
 </body>
 
 </html>
