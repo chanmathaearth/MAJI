@@ -24,14 +24,12 @@
         // Use the values as needed
       }
 
-      echo "111111 '$email', '$password'";
-
     // Check if the email already exists in the database
     $checkEmailQuery = "SELECT * FROM account WHERE accountEmail = '$email'";
     $result = $conn->query($checkEmailQuery);
 
     if ($result->num_rows > 0) {
-        echo "Email already exists";
+        echo "อีเมลเคยถูกใช้ไปแล้ว";
     } else {
         // Insert into account table
         $accountSQL = "INSERT INTO account (accountEmail, accountPassword) VALUES ('$email', '$password')";
@@ -44,7 +42,7 @@
             $customerSQL = "INSERT INTO customer (custName, custSurname, custPhone, accountId) VALUES ('$firstname', '$lastname', '$phone', $accountId)";
 
             if ($conn->query($customerSQL) === TRUE) {
-                echo "New record created successfully";
+                echo "ลงทะเบียนเรียบร้อย";
             } else {
                 echo "Error: " . $customerSQL . "<br>" . $conn->error;
             }
