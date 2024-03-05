@@ -342,7 +342,7 @@
     <div class="flex justify-center">
         <div id="navbar" class="flex mt-10 text-nowrap p-6 z-50 overflow-x-auto ml-[10%] mr-[10%]  "></div>
     </div>
-
+<div class="text-red-600 flex justify-center "> *สมาชิกรับส่วนลดทันที 10%  </div>
     <div class="grid w-full h-screen sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-4">
         <div class="md:col-span-3 sm:col-span-4 items-center justify-center">
 
