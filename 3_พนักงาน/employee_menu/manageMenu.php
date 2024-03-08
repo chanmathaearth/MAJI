@@ -100,6 +100,7 @@
                         <div>
                             <label class="block mb-2 mt-3 text-sm font-medium text-black" for="file_input">ใส่รูปเมนู</label>
                             <input name="fileName" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white" id="file_input" type="file">
+                            <div id="image"></div>
                         </div>
                     </div>
 
@@ -113,7 +114,7 @@
     </div>
     </form>
     <script>
-        function fillForm(name, price, desc, type) {
+        function fillForm(name, price, desc, type, image) {
             document.getElementById('name').value = name;
             document.getElementById('price').value = price;
             document.getElementById('desc').value = desc;
@@ -125,13 +126,24 @@
                     break;
                 }
             }
+            console.log(image);
+
+            var imgElement = document.createElement('div');
+            imgElement.innerHTML = `<img class="mx-auto mt-5" src="${image}" width="200px" height="200px">`;
+
+            // Clear any existing content in the qrCode div
+            var qrCodeDiv = document.getElementById('image');
+            qrCodeDiv.innerHTML = '';
+
+            // Append the img element and paragraph elements to the qrCode div
+            qrCodeDiv.appendChild(imgElement);
         }
     </script>
 
     <?php
     $servername = "localhost";
-    $username = "S074T";
-    $password = "VA12906";
+    $username = "root";
+    $password = "";
     $dbname = "maji";
 
     // Create connection <div id="basket" class="w-w-1/4"></div>
@@ -142,6 +154,7 @@
         die("Connection failed: " . mysqli_connect_error());
     }
     if (isset($_POST['submit'])) {
+
         $sele = $_POST['sele'];
         $name = $_POST['name'];
         $price = $_POST['price'];
@@ -153,6 +166,7 @@
         $result = mysqli_query($conn, $sql);
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
+
                 if ($sele == "edit") {
                     $sql = "UPDATE menu SET menuId = " . $row["menuId"] . ", menuName = '$name', menuImage = '$filename', menuPrice = '$price', menuDescription = '$desc', menuTypeID = '$type' WHERE menuName = '$name'";
                     $result = mysqli_query($conn, $sql);
@@ -169,6 +183,7 @@
                     } else {
                         echo "<script>alert('Delete Failed');</script>";
                     }
+
                 } else if ($sele == "add") {
                     $sql = "INSERT INTO `menu`(`menuId`, `menuName`, `menuImage`, `menuPrice`, `menuDescription`, `menuTypeID`) VALUES ('" . $row["menuId"] + 1 . "','$name','$filename',' $price','$desc','$type')";
                     $result = mysqli_query($conn, $sql);
@@ -211,10 +226,18 @@
                     $result = mysqli_query($conn, $sql);
                     if (mysqli_num_rows($result) > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
+
+                            $menuName = $row['menuName'];
+                            $menuPrice = $row['menuPrice'];
+                            $menuDescription = $row['menuDescription'];
+                            $menuTypeId = $row['menuTypeId'];
+                            $menuImage = $row['menuImage'];
+
+
                             echo "<tr class='border'>";
-                            echo "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $row["menuName"] . "\", \"" . $row["menuPrice"] . "\", \"" . $row["menuDescription"] . "\", \"" . $row["menuTypeID"] . "\")'>" . $row["menuName"] .  "</a> </td>";
-                            echo "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $row["menuName"] . "\", \"" . $row["menuPrice"] . "\", \"" . $row["menuDescription"] . "\", \"" . $row["menuTypeID"] . "\")'>" . $row["menuPrice"] . ".- </td>" .
-                                "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $row["menuName"] . "\", \"" . $row["menuPrice"] . "\", \"" . $row["menuDescription"] . "\", \"" . $row["menuTypeID"] . "\")'>" . $row["menuDescription"] . "</td>" .
+                            echo "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\")'>" . $menuName .  "</a> </td>";
+                            echo "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\")'>" . $menuPrice . ".- </td>" .
+                                "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\")'>" . $menuDescription . "</td>" .
                                 "</tr>";
                         }
                     } else {
