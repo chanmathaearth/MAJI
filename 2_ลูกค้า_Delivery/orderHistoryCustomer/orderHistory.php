@@ -107,7 +107,7 @@ if ($conn->connect_error) {
                 
 //สมมติ accountId มา เพราะจริงๆต้องใช้ session
 
-                    $customerSQL = "SELECT custId FROM customer WHERE accountId = 10";
+                    $customerSQL = "SELECT custId FROM customer WHERE accountId = 2";
                     $customerResult = $conn->query($customerSQL);
 
                     if ($customerResult->num_rows > 0) {
