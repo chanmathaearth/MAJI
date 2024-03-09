@@ -13,7 +13,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="fetchmainNav.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+
 
     <style>
         body {
@@ -26,6 +26,28 @@
 </head>
 
 <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <script>
+        function reloadPage() {
+            // Reload the current document
+            window.location.reload;
+        }
+
+        function validateForm() {
+            var sele = document.getElementById('sele').value;
+            var name = document.getElementById('name').value;
+            var price = document.getElementById('price').value;
+            var desc = document.getElementById('desc').value;
+            var time = document.getElementById('time').value;
+            var serve = document.getElementById('serve').value;
+            var Type = document.getElementById('Type').value;
+            var fileName = document.getElementById('file_input').value;
+            if (sele === "" || name === "" || price === "" || desc === "" || time === "" || serve === "" || Type === "" || fileName === "") {
+                alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                return false;
+            }
+        }
+    </script>
     <div id="mainnavbar"></div>
     <div class="bg-white pr-8 pl-8 pb-8">
         <div class="grid place-content-center gap-2 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4 mt-[3%]">
@@ -51,13 +73,13 @@
                 <h2 class="text-red-500 text-2xl font-semibold mb-6">จัดการเมนูอาหาร</h2>
 
 
-                <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                <form method="post" enctype="multipart/form-data" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                     <div class="ml-3 mb-4">
                         <div class="container mx-auto ">
                             <label for="sele" class="block text-sm font-medium text-black">เลือกวิธีการจัดการ</label>
                             <div class="">
-                                <select id="sele" name="sele" class="mt-1  block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-black bg-white">
-                                    <option selected> แก้ไข / เพิ่ม / ลบ</option>
+                                <select id="sele" name="sele" class="mt-1  block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-black bg-white" required>
+                                    <option value="" disabled selected> แก้ไข / เพิ่ม / ลบ</option>
                                     <option value="edit">แก้ไข</option>
                                     <option value="add">เพิ่ม</option>
                                     <option value="delete">ลบ</option>
@@ -66,26 +88,52 @@
                         </div>
                     </div>
                     <div class="mb-4 ml-3">
+                        <label for="name" class="block text-sm font-medium text-gray-900">หมายเลขรหัสเมนู :</label>
+                        <input type="text" value="ไม่สามารแก้ไขค่าได้" readonly id="menuId" name="menuId" class="cursor-not-allowed text-gray-700 bg-gray-300 mt-1 p-2 w-full border rounded-md">
+                    </div>
+                    <div class="mb-4 ml-3">
                         <label for="name" class="block text-sm font-medium text-gray-900">ชื่อเมนู :</label>
-                        <input type="text" id="name" name="name" class="mt-1 p-2 w-full border rounded-md">
+                        <input type="text" id="name" name="name" class="mt-1 p-2 w-full border rounded-md" placeholder="ไก่ทอดราดซอสนัมบัง" required>
                     </div>
 
                     <div class="mb-4 ml-3">
                         <label for="price" class="block text-sm font-medium text-gray-900">ราคา :</label>
-                        <input type="text" id="price" name="price" class="mt-1 p-2 w-full border rounded-md">
+                        <input type="text" id="price" name="price" class="mt-1 p-2 w-full border rounded-md" placeholder="200" required>
                     </div>
 
                     <div class="mb-4 ml-3">
                         <label for="desc" class="block text-sm font-medium text-gray-900">รายละเอียดเมนู :</label>
-                        <input type="text" id="desc" name="desc" class="mt-1 p-2 w-full border rounded-md">
+                        <input type="text" id="desc" name="desc" class="mt-1 p-2 w-full border rounded-md" placeholder="เซตไก่ทอดราดซอสนัมบัง" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-3 mb-4 ml-3">
+                        <div>
+                            <label for="time" class="block text-sm font-medium text-gray-900">เวลาในการทำ :</label>
+                            <div class=" flex flex-row-reverse mt-1">
+                                <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border  rounded-r-md">
+                                    นาที
+                                </span>
+
+                                <input type="Int" id="time" name="time" class=" p-2 w-full border rounded-l-md" placeholder="10" required>
+
+                            </div>
+                        </div>
+                        <div>
+                            <label for="serve" class="block text-sm font-medium text-gray-900">สำหรับ :</label>
+                            <div class=" flex flex-row-reverse mt-1">
+                                <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border  rounded-r-md">
+                                    ท่าน
+                                </span>
+                                <input type="Int" id="serve" name="serve" class=" p-2 w-full border rounded-l-md" placeholder="1" required>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="ml-3">
                         <div class="container mx-auto">
                             <label class="block text-sm font-medium text-black">ประเภท</label>
                             <div class="">
-                                <select id="Type" name="Type" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-black bg-white">
-                                    <option selected> เลือกประเภทอาหาร</option>
+                                <select id="Type" name="Type" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-black bg-white" required>
+                                    <option value="" disabled selected> เลือกประเภทอาหาร</option>
                                     <option value="6"> สิทธิพิเศษ </option>
                                     <option value="1"> ชุดเซ็ต </option>
                                     <option value="2"> ดงบุรี </option>
@@ -96,16 +144,15 @@
                             </div>
                         </div>
 
-
                         <div>
                             <label class="block mb-2 mt-3 text-sm font-medium text-black" for="file_input">ใส่รูปเมนู</label>
                             <input name="fileName" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white" id="file_input" type="file">
-                            <div id="image"></div>
+                            <div id="image" name="image"></div>
                         </div>
                     </div>
 
                     <div class="mt-6">
-                        <button name="submit" class="w-full px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-900 focus:outline-none focus:ring focus:border-blue-300">
+                        <button onclick="validateForm()" type="submit" name="submit" class="w-full px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-900 focus:outline-none focus:ring focus:border-blue-300">
                             Submit
                         </button>
                     </div>
@@ -114,10 +161,13 @@
     </div>
     </form>
     <script>
-        function fillForm(name, price, desc, type, image) {
+        function fillForm(menuId, name, price, desc, type, image, time, serve) {
+            document.getElementById('menuId').value = menuId;
             document.getElementById('name').value = name;
             document.getElementById('price').value = price;
             document.getElementById('desc').value = desc;
+            document.getElementById('time').value = time;
+            document.getElementById('serve').value = serve;
 
             var dropdown = document.getElementById('Type');
             for (var i = 0; i < dropdown.options.length; i++) {
@@ -131,12 +181,12 @@
             var imgElement = document.createElement('div');
             imgElement.innerHTML = `<img class="mx-auto mt-5" src="${image}" width="200px" height="200px">`;
 
-            // Clear any existing content in the qrCode div
-            var qrCodeDiv = document.getElementById('image');
-            qrCodeDiv.innerHTML = '';
+            // Clear any existing content in the img div
+            var imgDiv = document.getElementById('image');
+            imgDiv.innerHTML = '';
 
-            // Append the img element and paragraph elements to the qrCode div
-            qrCodeDiv.appendChild(imgElement);
+            // Append the img element and paragraph elements to the img div
+            imgDiv.appendChild(imgElement);
         }
     </script>
 
@@ -156,46 +206,44 @@
     if (isset($_POST['submit'])) {
 
         $sele = $_POST['sele'];
+        $menuId = $_POST['menuId'];
         $name = $_POST['name'];
         $price = $_POST['price'];
         $desc = $_POST['desc'];
         $type = $_POST['Type'];
         $fileName = $_FILES["fileName"]["name"];
+        $time = $_POST['time'];
+        $serve = $_POST['serve'];
 
-        $sql = "SELECT * FROM menu;";
-        $result = mysqli_query($conn, $sql);
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
 
-                if ($sele == "edit") {
-                    $sql = "UPDATE menu SET menuId = " . $row["menuId"] . ", menuName = '$name', menuImage = '$filename', menuPrice = '$price', menuDescription = '$desc', menuTypeID = '$type' WHERE menuName = '$name'";
-                    $result = mysqli_query($conn, $sql);
-                    if ($result) {
-                        echo "<script>alert('Update Successful');</script>";
-                    } else {
-                        echo "<script>alert('Update Failed');</script>";
-                    }
-                } else if ($sele == "delete") {
-                    $sql = "DELETE FROM menu WHERE menuName = '$name'";
-                    $result = mysqli_query($conn, $sql);
-                    if ($result) {
-                        echo "<script>alert('Delete Successful');</script>";
-                    } else {
-                        echo "<script>alert('Delete Failed');</script>";
-                    }
-
-                } else if ($sele == "add") {
-                    $sql = "INSERT INTO `menu`(`menuId`, `menuName`, `menuImage`, `menuPrice`, `menuDescription`, `menuTypeID`) VALUES ('" . $row["menuId"] + 1 . "','$name','$filename',' $price','$desc','$type')";
-                    $result = mysqli_query($conn, $sql);
-                    if ($result) {
-                        echo "<script>alert('เพิ่มเมนูสำเร็จ');</script>";
-                    } else {
-                        echo "<script>alert('เพิ่มเมนูไม่สำเร็จ');</script>";
-                    }
-                }
+        if ($sele == "edit") {
+            $sql = "UPDATE menu SET menuId = '$menuId', menuName = '$name', menuImage = '$fileName', menuPrice = '$price', menuDescription = '$desc', menuTypeID = '$type', menuTime = '$time', menuServe = '$serve' WHERE menuId = '$menuId'";
+            $result = mysqli_query($conn, $sql);
+            if ($result) {
+                echo "<script>alert('การอัพเดทสำเร็จ'); window.location.reload;</script>";
+            } else {
+                echo "<script>alert('การอัพเดทไม่สำเร็จ');window.location.reload;</script>";
+            }
+        } else if ($sele == "delete") {
+            $sql = "DELETE FROM menu WHERE menuId = '$menuId'";
+            $result = mysqli_query($conn, $sql);
+            if ($result) {
+                echo "<script>alert('การลบสำเร็จ'); window.location.reload ;</script>";
+            } else {
+                echo "<script>alert('การลบไม่สำเร็จ'); window.location.reload ;</script>";
+            }
+        } else if ($sele == "add") {
+            $sql = "INSERT INTO `menu`( `menuName`, `menuImage`, `menuPrice`, `menuDescription`, `menuTypeID`, `menuTime`, `menuServe`) VALUES ('$name','$fileName',' $price','$desc','$type','$time','$serve')";
+            $result = mysqli_query($conn, $sql);
+            if ($result) {
+                echo "<script>alert('เพิ่มเมนูสำเร็จ'); window.location.reload; </script>";
+            } else {
+                echo "<script>alert('เพิ่มเมนูไม่สำเร็จ'); window.location.reload;</script>";
             }
         }
     }
+
+
 
     ?>
     <form class="max-w-md mx-auto">
@@ -227,6 +275,7 @@
                     if (mysqli_num_rows($result) > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
 
+                            $menuId = $row['menuId'];
                             $menuName = $row['menuName'];
                             $menuPrice = $row['menuPrice'];
                             $menuDescription = $row['menuDescription'];
@@ -235,9 +284,9 @@
 
 
                             echo "<tr class='border'>";
-                            echo "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\")'>" . $menuName .  "</a> </td>";
-                            echo "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\")'>" . $menuPrice . ".- </td>" .
-                                "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\")'>" . $menuDescription . "</td>" .
+                            echo "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuId . "\",\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\")'>" . $menuName . "</a> </td>";
+                            echo "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuId . "\",\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\")'>" . $menuPrice . ".- </td>" .
+                                "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuId . "\",\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\")'>" . $menuDescription . "</td>" .
                                 "</tr>";
                         }
                     } else {
