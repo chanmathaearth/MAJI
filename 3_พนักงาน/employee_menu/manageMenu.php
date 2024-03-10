@@ -89,7 +89,7 @@
                     </div>
                     <div class="mb-4 ml-3">
                         <label for="name" class="block text-sm font-medium text-gray-900">หมายเลขรหัสเมนู :</label>
-                        <input type="text" value="ไม่สามารแก้ไขค่าได้" readonly id="menuId" name="menuId" class="cursor-not-allowed text-gray-700 bg-gray-300 mt-1 p-2 w-full border rounded-md">
+                        <input type="number" value="ไม่สามารแก้ไขค่าได้" readonly id="menuId" name="menuId" class="cursor-not-allowed text-gray-700 bg-gray-300 mt-1 p-2 w-full border rounded-md">
                     </div>
                     <div class="mb-4 ml-3">
                         <label for="name" class="block text-sm font-medium text-gray-900">ชื่อเมนู :</label>
@@ -98,7 +98,7 @@
 
                     <div class="mb-4 ml-3">
                         <label for="price" class="block text-sm font-medium text-gray-900">ราคา :</label>
-                        <input type="text" id="price" name="price" class="mt-1 p-2 w-full border rounded-md" placeholder="200" required>
+                        <input type="number" id="price" name="price" class="mt-1 p-2 w-full border rounded-md" placeholder="200" required>
                     </div>
 
                     <div class="mb-4 ml-3">
@@ -113,7 +113,7 @@
                                     นาที
                                 </span>
 
-                                <input type="Int" id="time" name="time" class=" p-2 w-full border rounded-l-md" placeholder="10" required>
+                                <input type="number" id="time" name="time" class=" p-2 w-full border rounded-l-md" placeholder="10" required>
 
                             </div>
                         </div>
@@ -123,7 +123,7 @@
                                 <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border  rounded-r-md">
                                     ท่าน
                                 </span>
-                                <input type="Int" id="serve" name="serve" class=" p-2 w-full border rounded-l-md" placeholder="1" required>
+                                <input type="number" id="serve" name="serve" class=" p-2 w-full border rounded-l-md" placeholder="1" required>
                             </div>
                         </div>
                     </div>
@@ -281,12 +281,14 @@
                             $menuDescription = $row['menuDescription'];
                             $menuTypeId = $row['menuTypeId'];
                             $menuImage = $row['menuImage'];
+                            $menuTime = $row['menuTime'];
+                            $menuServe = $row['menuServe'];
 
 
                             echo "<tr class='border'>";
-                            echo "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuId . "\",\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\")'>" . $menuName . "</a> </td>";
-                            echo "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuId . "\",\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\")'>" . $menuPrice . ".- </td>" .
-                                "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuId . "\",\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\")'>" . $menuDescription . "</td>" .
+                            echo "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuId . "\",\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\", \"" . $menuTime . "\", \"" . $menuServe . "\")'>" . $menuName . "</a> </td>";
+                            echo "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuId . "\",\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\", \"" . $menuTime . "\", \"" . $menuServe . "\")'>" . $menuPrice . ".- </td>" .
+                                "<td class='py-2 px-4 border'> <a href='javascript:fillForm(\"" . $menuId . "\",\"" . $menuName . "\", \"" . $menuPrice . "\", \"" . $menuDescription . "\", \"" . $menuTypeId . "\", \"" . $menuImage . "\", \"" . $menuTime . "\", \"" . $menuServe . "\")'>" . $menuDescription . "</td>" .
                                 "</tr>";
                         }
                     } else {
