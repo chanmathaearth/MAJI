@@ -34,7 +34,7 @@
           </div>
         </div>
         <div>
-          <button onclick="window.location.href='addressInfo.html';" class="mt-2 mb-[2%] text-white bg-amber-400 hover:bg-amber-500 font-medium rounded-full text-sm px-5 py-2.5 text-center">
+          <button onclick="window.location.href='addressInfo.php';" class="mt-2 mb-[2%] text-white bg-amber-400 hover:bg-amber-500 font-medium rounded-full text-sm px-5 py-2.5 text-center">
             ยืนยันการสั่งซื้อ
           </button>
         </div>
